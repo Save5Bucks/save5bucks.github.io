@@ -70,12 +70,21 @@
   background-color: #1a1a1a;
   border: 2px solid #00ffcc;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   color: #00ffcc;
   text-shadow: 0 0 5px rgba(0, 255, 204, 0.7);
-  cursor: move; user-select: none;
-  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: move;
+  user-select: none;
+
+  /* Smooth transforms handled by GPU */
+  will-change: transform;
+  backface-visibility: hidden;
+
+  /* Transition only extra effects, not the movement itself */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .bubble:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(0,255,204,0.5); }
 .bubble.colliding { border-color: #ff0000; transition: border-color 0.1s; }
