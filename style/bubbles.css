@@ -1,80 +1,81 @@
-body {
-            background-color: #2b2b2b;
-            color: #e0e0e0;
-            font-family: 'Courier New', monospace;
-            margin: 0;
-            overflow: hidden;
-        }
-        .navbar {
-            background-color: #1a1a1a;
-            border-bottom: 2px solid #00ffcc;
-        }
-        .container-fluid {
-            height: calc(100vh - 66px); /* Adjust for navbar height */
-            position: relative;
-            overflow: hidden;
-        }
-        .name {
-            font-size: 4rem;
-            color: #00ffcc;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.7);
-            text-align: center;
-            padding: 20px 0;
-            animation: fadeIn 2s ease-in-out;
-            position: relative;
-            z-index: 1;
-        }
-        .bubble {
-            position: absolute;
-            background-color: #1a1a1a;
-            border: 2px solid #00ffcc;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #00ffcc;
-            text-shadow: 0 0 5px rgba(0, 255, 204, 0.7);
-            cursor: move;
-            user-select: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .bubble:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
-        }
-        .bubble.colliding {
-            border-color: #ff0000;
-            transition: border-color 0.1s;
-        }
-        .scoreboard {
-            position: absolute;
-            left: 10px;
-            top: 20px; /* Match title padding */
-            bottom: 20px; /* Match bottom padding */
-            width: 225px; /* Set width to 225px */
-            background-color: #1a1a1a;
-            border: 1px solid #00ffcc;
-            padding: 10px;
-            overflow-y: auto; /* Scrollable if content overflows */
-            z-index: 2;
-        }
-        .scoreboard h3 {
-            color: #00ffcc;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        .scoreboard ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .scoreboard li {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+/* Fullscreen viewport between fixed navbar + fixed footer */
+.bubbles-viewport {
+  height: calc(100vh - var(--nav-h) - var(--footer-h));
+  position: relative;
+  overflow: hidden; /* no page scroll; the game fits */
+  padding: 0;       /* we’ll manage spacing precisely */
+}
+
+/* Title stays on top */
+#title {
+  font-size: 3rem;
+  color: #00ffcc;
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.7);
+  text-align: center;
+  padding: 16px 0;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* Bubble playfield fills viewport (bubbles are absolutely placed inside) */
+#bubble-container {
+  position: absolute;
+  inset: 0;             /* top/right/bottom/left:0 */
+  z-index: 1;
+}
+
+/* Scoreboard: left column that stays vertically centered with equal spacing */
+.scoreboard {
+  --sb-w: clamp(180px, 16vw, 260px);
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  bottom: 10px;
+  width: var(--sb-w);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* equal space above & below */
+  align-items: stretch;
+
+  background-color: #1a1a1a;
+  border: 1px solid #00ffcc;
+  padding: 10px;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.scoreboard h3 {
+  color: #00ffcc;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.scoreboard ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1.2;
+  flex: 1 1 auto;
+  overflow: hidden;
+  transform-origin: top left;
+}
+
+/* Bubbles */
+.bubble {
+  position: absolute;
+  background-color: #1a1a1a;
+  border: 2px solid #00ffcc;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  color: #00ffcc;
+  text-shadow: 0 0 5px rgba(0, 255, 204, 0.7);
+  cursor: move; user-select: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.bubble:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(0,255,204,0.5); }
+.bubble.colliding { border-color: #ff0000; transition: border-color 0.1s; }

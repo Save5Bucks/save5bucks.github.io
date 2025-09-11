@@ -1,225 +1,256 @@
+/* ------------------------------
+   Bubbles – Full Update
+   - Fullscreen viewport
+   - Scoreboard auto-scales (no scroll)
+   - Accurate bounds + resize handling
+------------------------------ */
+
 const languages = [
-            'Lua', 'Python', 'Java', 'JavaScript', 'C#', 'C++', 'MySQL', 'MariaDB', 'HTML', 'CSS', 'Visual Basic', 'XAML', 
-            '3DS Max', 'AI', 'Day Z', 'GTA V', 'The Isle', 'Rust', 'Valheim', 'Ark', 'Node JS', 'React JS', 'Angular JS', 
-            'Vue JS', 'Express JS', 'Photo Shop', 'Arma Reforger', 'Atlas', 'VPS', 'Dedicated Servers', 'Wix', 'Project Zomboid'
-        ].sort();
+  'Lua','Python','Java','JavaScript','C#','C++','MySQL','MariaDB','HTML','CSS','Visual Basic','XAML',
+  '3DS Max','AI','Day Z','GTA V','The Isle','Rust','Valheim','Ark','Node JS','React JS','Angular JS',
+  'Vue JS','Express JS','Photo Shop','Arma Reforger','Atlas','VPS','Dedicated Servers','Wix','Project Zomboid'
+].sort();
 
-        const container = document.getElementById('bubble-container');
-        let containerRect = container.parentElement.getBoundingClientRect();
-        const title = document.getElementById('title');
-        let titleRect = title.getBoundingClientRect();
-        const scoreboard = document.getElementById('scoreboard');
-        let scoreboardRect = scoreboard.getBoundingClientRect();
-        const scoreList = document.getElementById('score-list');
-        const bubbles = [];
+// DOM refs
+const viewport   = document.getElementById('bubbles-viewport');
+const container  = document.getElementById('bubble-container');
+const titleEl    = document.getElementById('title');
+const scoreboard = document.getElementById('scoreboard');
+const scoreList  = document.getElementById('score-list');
 
-        // Canvas for text measurement
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.font = '16px "Courier New", monospace';
+let containerRect = viewport.getBoundingClientRect();
+let titleRect     = titleEl.getBoundingClientRect();
+let scoreboardRect= scoreboard.getBoundingClientRect();
+const bubbles     = [];
 
-        // Initialize scores
-        const scores = {};
-        languages.forEach(lang => scores[lang] = 0);
+// Canvas for measuring text (keep in sync with CSS font)
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+ctx.font = '16px "Courier New", monospace';
 
-        languages.forEach(lang => {
-            const textWidth = ctx.measureText(lang).width;
-            const size = textWidth + 10;
+// Scores
+const scores = {};
+languages.forEach(lang => (scores[lang] = 0));
 
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            bubble.innerText = lang;
-            bubble.style.width = `${size}px`;
-            bubble.style.height = `${size}px`;
-            bubble.style.fontSize = '16px';
-            bubble.style.left = `${Math.random() * (containerRect.width - size)}px`;
-            bubble.style.top = `${Math.random() * (containerRect.height - size - titleRect.height)}px`;
+/* ---------- Helpers ---------- */
 
-            const bubbleData = {
-                element: bubble,
-                x: parseFloat(bubble.style.left) + size / 2,
-                y: parseFloat(bubble.style.top) + size / 2,
-                vx: (Math.random() - 0.5) * 2,
-                vy: (Math.random() - 0.5) * 2,
-                radius: size / 2,
-                isDragging: false,
-                name: lang
-            };
-            bubbles.push(bubbleData);
-            container.appendChild(bubble);
+// Expose title height as a CSS variable for CSS positioning if needed
+function updateTitleHeightVar() {
+  const h = titleEl.getBoundingClientRect().height || 60;
+  document.documentElement.style.setProperty('--title-h', h + 'px');
+}
 
-            // Dragging
-            let offsetX, offsetY;
-            bubble.addEventListener('mousedown', (e) => {
-                bubbleData.isDragging = true;
-                offsetX = e.clientX - bubbleData.x;
-                offsetY = e.clientY - bubbleData.y;
-                bubbleData.vx = 0;
-                bubbleData.vy = 0;
-            });
+// Scale the scoreboard list so it fits its box without an inner scrollbar
+function fitScoreboard() {
+  const header = scoreboard.querySelector('h3');
+  const headerH = header ? header.getBoundingClientRect().height : 0;
 
-            document.addEventListener('mousemove', (e) => {
-                if (bubbleData.isDragging) {
-                    bubbleData.x = e.clientX - offsetX;
-                    bubbleData.y = e.clientY - offsetY;
-                    keepInBounds(bubbleData);
-                    updatePosition(bubbleData);
-                }
-            });
+  const availableH = scoreboard.clientHeight - headerH - 10; // 10 = padding buffer
+  // Reset scaling first
+  scoreList.style.transform = 'scale(1)';
+  scoreList.style.height = 'auto';
+  scoreList.style.width = '100%';
 
-            document.addEventListener('mouseup', () => {
-                if (bubbleData.isDragging) {
-                    bubbleData.isDragging = false;
-                    bubbleData.vx = (Math.random() - 0.5) * 2;
-                    bubbleData.vy = (Math.random() - 0.5) * 2;
-                }
-            });
-        });
+  const naturalH = scoreList.scrollHeight;
 
-        // Initial scoreboard render
-        updateScoreboard();
+  if (naturalH <= availableH) return; // fits already
 
-        // Update bounding boxes on resize
-        window.addEventListener('resize', () => {
-            containerRect = container.parentElement.getBoundingClientRect();
-            titleRect = title.getBoundingClientRect();
-            scoreboardRect = scoreboard.getBoundingClientRect();
-            bubbles.forEach(bubble => keepInBounds(bubble));
-        });
+  const scale = Math.max(0.55, availableH / naturalH); // clamp to keep readable
+  scoreList.style.transform = `scale(${scale})`;
+  // Expand logical width/height so scaled content doesn’t clip
+  scoreList.style.width  = (100 / scale) + '%';
+  scoreList.style.height = (availableH / scale) + 'px';
+}
 
-        function updatePosition(bubble) {
-            bubble.element.style.left = `${bubble.x - bubble.radius}px`;
-            bubble.element.style.top = `${bubble.y - bubble.radius}px`;
-        }
+// Recompute rects and enforce bounds
+function updateRectsAndBounds() {
+  containerRect  = viewport.getBoundingClientRect();
+  titleRect      = titleEl.getBoundingClientRect();
+  scoreboardRect = scoreboard.getBoundingClientRect();
+  updateTitleHeightVar();
+  fitScoreboard();
+  bubbles.forEach(keepInBounds);
+}
 
-        function keepInBounds(bubble) {
-            bubble.x = Math.max(bubble.radius + scoreboardRect.width + 10, Math.min(bubble.x, containerRect.width - bubble.radius));
-            bubble.y = Math.max(bubble.radius + titleRect.height, Math.min(bubble.y, containerRect.height - bubble.radius));
-        }
+// Position bubble’s DOM element from its center coords
+function updatePosition(b) {
+  b.element.style.left = `${b.x - b.radius}px`;
+  b.element.style.top  = `${b.y - b.radius}px`;
+}
 
-        function checkBubbleCollision(bubble1, bubble2) {
-            const dx = bubble2.x - bubble1.x;
-            const dy = bubble2.y - bubble1.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const minDistance = bubble1.radius + bubble2.radius;
+// Keep bubbles inside the playfield, respecting title + scoreboard footprints
+function keepInBounds(b) {
+  // left wall is scoreboard width + gutter
+  const leftBound = (scoreboardRect.width || 0) + 10;
+  const rightBound = containerRect.width;
+  const topBound = titleRect.height;
+  const bottomBound = containerRect.height;
 
-            if (distance < minDistance) {
-                // Flash red border
-                bubble1.element.classList.add('colliding');
-                bubble2.element.classList.add('colliding');
-                setTimeout(() => {
-                    bubble1.element.classList.remove('colliding');
-                    bubble2.element.classList.remove('colliding');
-                }, 100);
+  b.x = Math.max(b.radius + leftBound, Math.min(b.x, rightBound - b.radius));
+  b.y = Math.max(b.radius + topBound, Math.min(b.y, bottomBound - b.radius));
+}
 
-                // Increment scores
-                scores[bubble1.name]++;
-                scores[bubble2.name]++;
-                updateScoreboard();
+// Bubble-bubble collision (elastic swap and score tick)
+function checkBubbleCollision(b1, b2) {
+  const dx = b2.x - b1.x;
+  const dy = b2.y - b1.y;
+  const dist = Math.hypot(dx, dy);
+  const minDist = b1.radius + b2.radius;
 
-                // Collision response
-                const nx = dx / (distance || 1);
-                const ny = dy / (distance || 1);
-                const overlap = minDistance - distance;
-                const moveX = nx * overlap / 2;
-                const moveY = ny * overlap / 2;
+  if (dist < minDist) {
+    // Flash border
+    b1.element.classList.add('colliding');
+    b2.element.classList.add('colliding');
+    setTimeout(() => {
+      b1.element.classList.remove('colliding');
+      b2.element.classList.remove('colliding');
+    }, 100);
 
-                bubble1.x -= moveX;
-                bubble1.y -= moveY;
-                bubble2.x += moveX;
-                bubble2.y += moveY;
+    // Score
+    scores[b1.name]++; scores[b2.name]++;
+    updateScoreboard();
 
-                const v1x = bubble1.vx;
-                const v1y = bubble1.vy;
-                const v2x = bubble2.vx;
-                const v2y = bubble2.vy;
-                bubble1.vx = v2x;
-                bubble1.vy = v2y;
-                bubble2.vx = v1x;
-                bubble2.vy = v1y;
-            }
-        }
+    // Separate overlapping
+    const nx = dx / (dist || 1);
+    const ny = dy / (dist || 1);
+    const overlap = minDist - dist;
+    const moveX = nx * overlap / 2;
+    const moveY = ny * overlap / 2;
+    b1.x -= moveX; b1.y -= moveY;
+    b2.x += moveX; b2.y += moveY;
 
-        function checkTitleCollision(bubble) {
-            const titleLeft = 0;
-            const titleRight = containerRect.width;
-            const titleTop = 0;
-            const titleBottom = titleRect.height;
+    // Swap velocities (simple elastic)
+    const v1x = b1.vx, v1y = b1.vy;
+    b1.vx = b2.vx; b1.vy = b2.vy;
+    b2.vx = v1x;   b2.vy = v1y;
+  }
+}
 
-            const bubbleLeft = bubble.x - bubble.radius;
-            const bubbleRight = bubble.x + bubble.radius;
-            const bubbleTop = bubble.y - bubble.radius;
-            const bubbleBottom = bubble.y + bubble.radius;
+// Bounce off title band
+function checkTitleCollision(b) {
+  const topBand = titleRect.height;
+  if (b.y - b.radius < topBand) {
+    b.y = topBand + b.radius;
+    b.vy = Math.abs(b.vy);
+  }
+}
 
-            if (bubbleRight > titleLeft && bubbleLeft < titleRight &&
-                bubbleBottom > titleTop && bubbleTop < titleBottom) {
-                bubble.y = titleBottom + bubble.radius;
-                bubble.vy = Math.abs(bubble.vy);
-            }
-        }
+// Bounce off scoreboard side
+function checkScoreboardCollision(b) {
+  const leftWall = (scoreboardRect.width || 0) + 10;
+  if (b.x - b.radius < leftWall) {
+    b.x = leftWall + b.radius;
+    b.vx = Math.abs(b.vx);
+  }
+}
 
-        function checkScoreboardCollision(bubble) {
-            const scoreLeft = scoreboardRect.left;
-            const scoreRight = scoreboardRect.right;
-            const scoreTop = scoreboardRect.top;
-            const scoreBottom = scoreboardRect.bottom;
+// Render scoreboard list, then fit to available height
+function updateScoreboard() {
+  scoreList.innerHTML = '';
+  languages.forEach(lang => {
+    const li = document.createElement('li');
+    li.textContent = `${lang}: ${scores[lang]}`;
+    scoreList.appendChild(li);
+  });
+  fitScoreboard();
+}
 
-            const bubbleLeft = bubble.x - bubble.radius;
-            const bubbleRight = bubble.x + bubble.radius;
-            const bubbleTop = bubble.y - bubble.radius;
-            const bubbleBottom = bubble.y + bubble.radius;
+/* ---------- Init ---------- */
 
-            if (bubbleRight > scoreLeft && bubbleLeft < scoreRight &&
-                bubbleBottom > scoreTop && bubbleTop < scoreBottom) {
-                if (bubbleLeft < scoreRight) {
-                    bubble.x = scoreRight + bubble.radius + 10;
-                    bubble.vx = Math.abs(bubble.vx);
-                }
-            }
-        }
+// Draw initial (0) scoreboard so scoreboardRect is accurate before placing bubbles
+updateScoreboard();
+updateRectsAndBounds();
 
-        function updateScoreboard() {
-            scoreList.innerHTML = '';
-            languages.forEach(lang => {
-                const li = document.createElement('li');
-                li.textContent = `${lang}: ${scores[lang]}`;
-                scoreList.appendChild(li);
-            });
-        }
+// Create bubbles
+languages.forEach(lang => {
+  const textWidth = ctx.measureText(lang).width;
+  const size = Math.max(28, textWidth + 10); // min size for legibility
 
-        function animate() {
-            bubbles.forEach(bubble => {
-                if (!bubble.isDragging) {
-                    bubble.x += bubble.vx;
-                    bubble.y += bubble.vy;
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerText = lang;
+  bubble.style.width = `${size}px`;
+  bubble.style.height = `${size}px`;
+  bubble.style.fontSize = '16px';
 
-                    // Bounce off container walls
-                    if (bubble.x - bubble.radius < scoreboardRect.width + 10) {
-                        bubble.x = scoreboardRect.width + 10 + bubble.radius;
-                        bubble.vx = -bubble.vx;
-                    }
-                    if (bubble.x + bubble.radius > containerRect.width) {
-                        bubble.x = containerRect.width - bubble.radius;
-                        bubble.vx = -bubble.vx;
-                    }
-                    if (bubble.y + bubble.radius > containerRect.height) {
-                        bubble.y = containerRect.height - bubble.radius;
-                        bubble.vy = -bubble.vy;
-                    }
+  // Random starting position within bounds (respect title + scoreboard)
+  const leftBound = (scoreboardRect.width || 0) + 10;
+  const rightBound = containerRect.width;
+  const topBound = titleRect.height;
+  const bottomBound = containerRect.height;
 
-                    checkTitleCollision(bubble);
-                    checkScoreboardCollision(bubble);
-                    keepInBounds(bubble);
-                    updatePosition(bubble);
-                }
-            });
+  const startX = Math.random() * (rightBound - leftBound - size) + leftBound + size / 2;
+  const startY = Math.random() * (bottomBound - topBound - size) + topBound + size / 2;
 
-            for (let i = 0; i < bubbles.length; i++) {
-                for (let j = i + 1; j < bubbles.length; j++) {
-                    checkBubbleCollision(bubbles[i], bubbles[j]);
-                }
-            }
+  const b = {
+    element: bubble,
+    x: startX,
+    y: startY,
+    vx: (Math.random() - 0.5) * 2,
+    vy: (Math.random() - 0.5) * 2,
+    radius: size / 2,
+    isDragging: false,
+    name: lang
+  };
+  bubbles.push(b);
+  container.appendChild(bubble);
+  updatePosition(b);
 
-            requestAnimationFrame(animate);
-        }
-        animate();
+  // Dragging (mouse)
+  let offsetX = 0, offsetY = 0;
+  bubble.addEventListener('mousedown', e => {
+    b.isDragging = true;
+    offsetX = e.clientX - b.x;
+    offsetY = e.clientY - b.y;
+    b.vx = 0; b.vy = 0;
+  });
+  document.addEventListener('mousemove', e => {
+    if (!b.isDragging) return;
+    b.x = e.clientX - offsetX;
+    b.y = e.clientY - offsetY;
+    keepInBounds(b);
+    updatePosition(b);
+  });
+  document.addEventListener('mouseup', () => {
+    if (!b.isDragging) return;
+    b.isDragging = false;
+    b.vx = (Math.random() - 0.5) * 2;
+    b.vy = (Math.random() - 0.5) * 2;
+  });
+});
+
+// Resize handling: recompute rects, refit scoreboard, keep bubbles valid
+window.addEventListener('resize', updateRectsAndBounds);
+
+/* ---------- Animation Loop ---------- */
+function animate() {
+  for (const b of bubbles) {
+    if (b.isDragging) continue;
+
+    b.x += b.vx;
+    b.y += b.vy;
+
+    // Walls (right & bottom)
+    if (b.x + b.radius > containerRect.width) {
+      b.x = containerRect.width - b.radius; b.vx = -b.vx;
+    }
+    if (b.y + b.radius > containerRect.height) {
+      b.y = containerRect.height - b.radius; b.vy = -b.vy;
+    }
+
+    checkTitleCollision(b);
+    checkScoreboardCollision(b);
+    keepInBounds(b);
+    updatePosition(b);
+  }
+
+  // Pairwise collisions
+  for (let i = 0; i < bubbles.length; i++) {
+    for (let j = i + 1; j < bubbles.length; j++) {
+      checkBubbleCollision(bubbles[i], bubbles[j]);
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+animate();
