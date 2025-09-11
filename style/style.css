@@ -1,23 +1,71 @@
+/* ================================
+   Layout variables (fallbacks)
+   JS sets --nav-h / --footer-h after partials load
+================================== */
+:root {
+    --nav-h: 72px;
+    /* fallback; script will update */
+    --footer-h: 72px;
+    /* fallback; script will update */
+}
+
+/* ================================
+   Base + Page Layout
+================================== */
+html,
+body {
+    height: auto;
+    min-height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    /* stack: (nav in DOM), main, footer placeholder */
+}
+
 body {
     background-color: #2b2b2b;
     color: #e0e0e0;
     font-family: 'Courier New', monospace;
+
+    /* Space for fixed navbar (top) + fixed footer (bottom) */
+    padding-top: var(--nav-h);
+    padding-bottom: var(--footer-h);
+    overflow-y: auto;
 }
 
+main {
+    flex: 1;
+}
+
+/* grow to push footer placeholder to bottom if needed */
+
+/* ================================
+   Navbar
+================================== */
 .navbar {
     background-color: #1a1a1a;
     border-bottom: 2px solid #00ffcc;
 }
 
+.navbar .nav-link.active {
+    color: #00ffcc !important;
+    text-shadow: 0 0 6px rgba(0, 255, 204, 0.7);
+}
+
+/* ================================
+   Hero (fills viewport between nav & footer)
+================================== */
 .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: linear-gradient(45deg, #2b2b2b, #1a1a1a);
     position: relative;
+    /* anchor for ::before glow */
     overflow: hidden;
+    text-align: left;
+    padding: 64px 0 40px;
+
+    /* Fill the visible space between fixed navbar & fixed footer */
+    min-height: calc(100vh - var(--nav-h) - var(--footer-h));
+
+    background: linear-gradient(45deg, #2b2b2b, #1a1a1a);
 }
 
 .hero::before {
@@ -48,7 +96,11 @@ body {
     }
 }
 
+/* ================================
+   Type / Content
+================================== */
 .name {
+    text-align: left;
     font-size: 4rem;
     color: #00ffcc;
     text-shadow: 0 0 10px rgba(0, 255, 204, 0.7);
@@ -59,7 +111,8 @@ body {
     text-align: left;
     font-size: 1.2rem;
     max-width: 700px;
-    margin: 20px auto;
+    margin: 20px 0;
+    /* left-justified block (no auto-centering) */
     animation: slideUp 1.5s ease-in-out;
 }
 
@@ -74,6 +127,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
 }
 
+/* Buttons styled as links */
 .btn-link {
     background-color: #00ffcc;
     color: #1a1a1a;
@@ -93,15 +147,35 @@ body {
     animation: clickPulse 0.3s ease-out;
 }
 
+/* Privacy Policy */
+.centered-text {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.centered-block {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ================================
+   Profile image
+================================== */
 .profile-img {
-    max-width: 280px;
-    /* adjust size here */
+    min-width: 350px;
+    width: 350px;
+    max-width: 70vw;
+    /* responsive cap */
+    height: auto;
     border: 3px solid #00ffcc;
     border-radius: 50%;
-    /* stays circular */
     box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
 }
 
+/* ================================
+   Animations
+================================== */
 @keyframes clickPulse {
     0% {
         transform: scale(1);
@@ -138,5 +212,48 @@ body {
     to {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+/* ================================
+   Fixed Footer (always visible)
+================================== */
+.site-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1030;
+    /* above content, below typical modals */
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border-top: 2px solid #00ffcc;
+    padding: 16px 0;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.site-footer a {
+    color: #00ffcc;
+    text-decoration: none;
+}
+
+.site-footer a:hover {
+    color: #00cc99;
+    text-decoration: underline;
+}
+
+/* ================================
+   Responsive tweaks
+================================== */
+@media (max-width: 576px) {
+    .profile-img {
+        min-width: 220px;
+        width: 65vw;
+    }
+
+    .name {
+        font-size: 2.6rem;
     }
 }

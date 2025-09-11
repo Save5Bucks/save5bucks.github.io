@@ -1,0 +1,14 @@
+<footer class="site-footer">
+  <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+    <span>© <span id="year"></span> Tim Flinn — save5bucks</span>
+    <span>
+      <a href="contact.html">Contact</a>
+      <span class="mx-2">•</span>
+      <a href="https://github.com/Save5Bucks" target="_blank" rel="noopener">GitHub</a>
+    </span>
+  </div>
+</footer>
+<script>
+  // Set year inside the footer partial
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
