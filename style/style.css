@@ -14,8 +14,7 @@
 ================================== */
 html,
 body {
-    height: auto;
-    min-height: 100%;
+    height: 100%;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -149,14 +148,13 @@ main {
 
 /* Privacy Policy */
 .centered-text {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
-
 .centered-block {
-    margin-left: auto;
-    margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ================================
