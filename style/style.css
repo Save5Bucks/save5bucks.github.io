@@ -164,12 +164,18 @@ main {
     min-width: 350px;
     width: 350px;
     max-width: 70vw;
-    /* responsive cap */
     height: auto;
-    border: 3px solid #00ffcc;
+
     border-radius: 50%;
-    box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+    object-fit: cover; /* keeps it neatly cropped */
+
+    /* Edge highlight that goes both inward and outward */
+    box-shadow: 
+        0 0 0 3px #00ffcc,          /* outer edge border */
+        inset 0 0 0 3px #00ffcc,    /* inner edge border */
+        0 0 20px rgba(0, 255, 204, 0.4); /* outer glow */
 }
+
 
 /* ================================
    Animations
