@@ -1,0 +1,37 @@
+New Website
+
+www.flinnbuilt.com
+
+Create a new website for Flinn Built
+
+    - threejs for 3D graphics
+    - futuristic and timeless design
+    - promote user exploration and engagement
+    - basically a rpg in a website but simpler
+    - scrolling 3d effects and transitions
+    - immersive user experience
+    - stereo sound cues
+    - 3x3 triangle theory for capturing the eye
+
+Theme 
+    - Deep Space
+
+    Website should feel like we are in deep space. User should have to navigate to each page through space.
+
+Site Layout
+    - Home Page
+
+    - About Page
+
+    - Services Page
+
+    - Software
+        - ios
+        - android
+
+    - Portfolio
+
+    - Contact
+
+ Custom tools
+ - Blender plugin for HTML exporting?

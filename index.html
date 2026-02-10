@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flinn Built — Deep Space</title>
+  <link rel="stylesheet" href="/src/styles/main.css" />
+</head>
+<body>
+  <!-- Three.js Canvas -->
+  <canvas id="space-canvas"></canvas>
+
+  <!-- HUD Overlay -->
+  <div id="hud">
+    <!-- Navigation -->
+    <nav id="nav">
+      <button class="nav-btn active" data-target="home">Home</button>
+      <button class="nav-btn" data-target="about">About</button>
+      <button class="nav-btn" data-target="services">Services</button>
+      <button class="nav-btn" data-target="software">Software</button>
+      <button class="nav-btn" data-target="portfolio">Portfolio</button>
+      <button class="nav-btn" data-target="contact">Contact</button>
+    </nav>
+
+    <!-- Current Section Content -->
+    <div id="content-overlay">
+      <div id="content-inner"></div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loader">
+        <div class="loader-ring"></div>
+        <p class="loader-text">Entering Deep Space...</p>
+      </div>
+    </div>
+
+    <!-- Crosshair -->
+    <div id="crosshair">+</div>
+
+    <!-- Location Indicator -->
+    <div id="location-indicator">
+      <span class="location-label">SECTOR:</span>
+      <span id="location-name">HOME</span>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
