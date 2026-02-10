@@ -33,5 +33,66 @@ Site Layout
 
     - Contact
 
- Custom tools
- - Blender plugin for HTML exporting?
+ Game in a website
+    - Player should have their a base or star ship as a base where they can return to and play to progress
+    - Cookies store user session and progress
+    - Start off by picking a character 
+        - Male
+        - Female 
+        - Alien
+    - Select Race
+        - Humanoid
+        - Alieniod
+        - Catiod
+        - Dogiod
+    - Select Class with list, this will be the client type, 
+        - Home Owner
+        - Business Owner
+        - Server Owner
+    - Give character a name
+
+- Site Flow
+    - Start Transmission
+    - Fade to character selection - do not expose 3d site should be solid color.
+    - Character customization
+    - initialize character transition
+    - Blast door space reveal to 3D space site
+    - 3D space site - should remain hidden until blast door transition
+
+Site should use this information to have a deep space narrator tell a story with their character information. This should be a intuitive dialogue system that comes from the "Great Void".
+
+Intro - First Site Load
+
+Scrolling Star Wars Theme with music
+
+Text But make it Space themed to fit the narrator:
+
+<h1 class="name">Hi, I’m Tim Flinn</h1>
+<p class="bio">
+    With over 15 years in <strong>construction management</strong> and a background in
+    <strong>Computer Engineering from DeVry University</strong>, I've built a career bridging
+    hands-on field experience with software and game development.
+</p>
+<p class="bio">
+    I specialize in creating solutions across <strong>business applications</strong> and
+    <strong>game development</strong> — from managing construction crews and budgets to publishing mobile apps and
+    hosting multiplayer game servers. My work combines technical expertise with practical problem-solving.
+</p>
+<p>Project management, estimating, and delivering residential + commercial builds that stand the
+test of time.</p>
+<p>Apps for Android & iOS, backend tools, and game server hosting — built with reliability and
+real users in mind.</p>
+<p>Designing mods, scripting features, and running communities that keep players engaged and
+connected.</p>
+
+Note: We are more Construction but also Software Development, Video surveillance, Networking and Audio for Commercial Space. Not all need to be mentioned but just to have the data.
+
+in the software section we need this text for my apps not in the is format just for reference
+
+<h1 class="name centered-text">Privacy Policy</h1>
+<p class="bio centered-block">
+    Apps developed by Flinn Built may require access to certain device permissions to enable specific functionality. 
+    For example, the Flashlight Tool requires camera access to control the flash. 
+    We do not collect, store, or upload any personal data. The only data transmitted is 
+    automated crash reports and purchase information processed by Google or Apple service. Your data is not captured, recorded, or sold by Flinn Built.
+</p>

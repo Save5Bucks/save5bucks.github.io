@@ -14,7 +14,8 @@
   --color-heading: #ffffff;
   --color-glass: rgba(10, 15, 40, 0.7);
   --color-glass-border: rgba(68, 136, 255, 0.2);
-  --font-body: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-body: 'Orbitron', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Orbitron', sans-serif;
   --font-mono: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
 }
 
@@ -35,6 +36,7 @@ html, body {
   width: 100%;
   height: 100%;
   z-index: 0;
+  display: none;           /* Hidden until space reveal */
 }
 
 /* ── HUD Overlay ──────────────────────────────────────── */
@@ -46,10 +48,37 @@ html, body {
   height: 100%;
   z-index: 10;
   pointer-events: none;
+  display: none;           /* Hidden until space reveal */
 }
 
 #hud > * {
   pointer-events: auto;
+}
+
+/* Hide HUD elements while shroud is covering space */
+#nav,
+#content-overlay,
+#crosshair,
+#location-indicator {
+  opacity: 0;
+  transition: opacity 0.8s ease 0.5s;
+}
+
+/* Show HUD only after shroud is revealed */
+.hud-visible #nav,
+.hud-visible #content-overlay,
+.hud-visible #crosshair,
+.hud-visible #location-indicator {
+  opacity: 1;
+}
+
+/* Content overlay needs its own visible toggle too */
+.hud-visible #content-overlay {
+  opacity: 0; /* Reset — .visible class handles final show */
+}
+
+.hud-visible #content-overlay.visible {
+  opacity: 1;
 }
 
 /* ── Navigation ───────────────────────────────────────── */
@@ -70,7 +99,7 @@ html, body {
   color: var(--color-text);
   padding: 10px 18px;
   font-size: 11px;
-  font-family: var(--font-mono);
+  font-family: var(--font-heading);
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
@@ -129,13 +158,30 @@ html, body {
 
 /* ── Page Styles ──────────────────────────────────────── */
 .page {
-  padding: 20px;
+  padding: 25px;
+  background: rgba(68, 136, 255, 0.04);
+  border: 1px solid rgba(68, 136, 255, 0.15);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), var(--color-secondary), transparent);
+  opacity: 0.6;
 }
 
 .section-title {
+  font-family: var(--font-heading);
   font-size: 2.5rem;
-  font-weight: 300;
-  letter-spacing: 12px;
+  font-weight: 600;
+  letter-spacing: 6px;
   color: var(--color-heading);
   margin-bottom: 30px;
   position: relative;
@@ -156,7 +202,7 @@ html, body {
 .glitch {
   font-size: 4rem;
   font-weight: 100;
-  letter-spacing: 16px;
+  letter-spacing: 12px;
   color: var(--color-heading);
   text-transform: uppercase;
   position: relative;
@@ -195,14 +241,7 @@ html, body {
   justify-content: flex-start;
 }
 
-.scroll-arrow {
-  width: 20px;
-  height: 20px;
-  border-right: 2px solid var(--color-primary);
-  border-bottom: 2px solid var(--color-primary);
-  transform: rotate(45deg);
-  animation: scrollBounce 2s infinite;
-}
+
 
 @keyframes scrollBounce {
   0%, 100% { transform: rotate(45deg) translate(0, 0); opacity: 0.5; }
@@ -267,6 +306,8 @@ html, body {
 .service-icon {
   font-size: 2rem;
   margin-bottom: 12px;
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 8px var(--color-primary));
 }
 
 .service-card h3 {
@@ -306,6 +347,8 @@ html, body {
 .platform-icon {
   font-size: 2.5rem;
   margin-bottom: 15px;
+  color: var(--color-secondary);
+  filter: drop-shadow(0 0 10px var(--color-secondary));
 }
 
 .platform-card h3 {
@@ -336,8 +379,70 @@ html, body {
 }
 
 .tech-list li::before {
-  content: '▸ ';
+  font-family: 'bootstrap-icons';
+  content: '\F285 ';
   color: var(--color-primary);
+  filter: drop-shadow(0 0 4px rgba(68, 136, 255, 0.4));
+}
+
+/* ── Privacy Policy ────────────────────────────────────── */
+.privacy-policy {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(68, 255, 170, 0.03);
+  border: 1px solid rgba(68, 255, 170, 0.12);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.privacy-policy::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-secondary), var(--color-primary), transparent);
+  opacity: 0.5;
+}
+
+.protocol-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.protocol-header i {
+  font-size: 1.5rem;
+  color: var(--color-secondary);
+  text-shadow: 0 0 12px rgba(68, 255, 170, 0.4);
+}
+
+.protocol-header h3 {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 4px;
+  color: var(--color-secondary);
+  text-shadow: 0 0 8px rgba(68, 255, 170, 0.2);
+  margin: 0;
+}
+
+.privacy-policy p {
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: rgba(180, 200, 220, 0.75);
+  margin-bottom: 12px;
+}
+
+.privacy-policy p:last-child {
+  margin-bottom: 0;
+}
+
+.privacy-policy strong {
+  color: var(--color-secondary);
+  text-shadow: 0 0 6px rgba(68, 255, 170, 0.2);
 }
 
 /* ── Portfolio Grid ───────────────────────────────────── */
@@ -432,6 +537,8 @@ html, body {
 
 .link-icon {
   font-size: 1.1rem;
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 6px var(--color-primary));
 }
 
 .contact-form {
@@ -528,9 +635,9 @@ html, body {
 }
 
 .loader-text {
-  font-family: var(--font-mono);
+  font-family: var(--font-heading);
   font-size: 0.8rem;
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--color-primary);
   animation: pulse 1.5s ease-in-out infinite;
@@ -559,7 +666,7 @@ html, body {
   position: fixed;
   bottom: 30px;
   left: 30px;
-  font-family: var(--font-mono);
+  font-family: var(--font-heading);
   font-size: 0.7rem;
   letter-spacing: 3px;
   text-transform: uppercase;

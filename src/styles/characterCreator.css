@@ -1,0 +1,368 @@
+/* ══════════════════════════════════════════════════════════
+   CHARACTER CREATOR STYLES
+   Sci-fi holographic character creation interface
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Overlay ──────────────────────────────────────────── */
+#character-creator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background: radial-gradient(ellipse at center, rgba(5, 10, 30, 0.95) 0%, rgba(0, 0, 10, 0.98) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  animation: ccFadeIn 1s ease;
+}
+
+/* ── Welcome Traveler heading ─────────────────────────── */
+.cc-welcome {
+  font-family: var(--font-heading, 'Orbitron', sans-serif);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  color: #4488ff;
+  text-align: center;
+  text-shadow:
+    0 0 20px rgba(68, 136, 255, 0.5),
+    0 0 60px rgba(68, 136, 255, 0.2);
+  animation: ccWelcomePulse 3s ease-in-out infinite;
+  margin: 0;
+}
+
+@keyframes ccWelcomePulse {
+  0%, 100% { opacity: 0.85; text-shadow: 0 0 20px rgba(68, 136, 255, 0.5), 0 0 60px rgba(68, 136, 255, 0.2); }
+  50%      { opacity: 1;    text-shadow: 0 0 30px rgba(68, 136, 255, 0.7), 0 0 80px rgba(68, 136, 255, 0.3); }
+}
+
+#character-creator.cc-exit {
+  animation: ccFadeOut 1.5s ease forwards;
+}
+
+@keyframes ccFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ccFadeOut {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.02); }
+  100% { opacity: 0; transform: scale(1.1); }
+}
+
+/* ── Container ────────────────────────────────────────── */
+.cc-container {
+  display: flex;
+  gap: 60px;
+  align-items: center;
+  max-width: 900px;
+  width: 90%;
+}
+
+/* ── Preview (Left) ───────────────────────────────────── */
+.cc-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+#character-preview-canvas {
+  border: 1px solid rgba(68, 136, 255, 0.15);
+  background: radial-gradient(circle, rgba(20, 30, 60, 0.3) 0%, transparent 70%);
+  box-shadow: 0 0 40px rgba(68, 136, 255, 0.1), inset 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+.cc-preview-label {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: rgba(68, 136, 255, 0.4);
+  text-transform: uppercase;
+}
+
+/* ── Right Panel ──────────────────────────────────────── */
+.cc-right {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.cc-header {
+  margin-bottom: 30px;
+}
+
+.cc-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--color-heading);
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+/* ── Step Dots ────────────────────────────────────────── */
+.cc-steps-indicator {
+  display: flex;
+  gap: 8px;
+}
+
+.cc-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(68, 136, 255, 0.15);
+  border: 1px solid rgba(68, 136, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.cc-step-dot.active {
+  background: rgba(68, 136, 255, 0.5);
+  border-color: var(--color-primary);
+}
+
+.cc-step-dot.current {
+  background: var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
+}
+
+/* ── Step Content ─────────────────────────────────────── */
+.cc-step {
+  animation: ccStepIn 0.4s ease;
+}
+
+@keyframes ccStepIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.cc-step-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.cc-step-desc {
+  font-size: 0.8rem;
+  color: rgba(200, 214, 229, 0.5);
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+}
+
+/* ── Option Buttons ───────────────────────────────────── */
+.cc-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cc-option {
+  flex: 1;
+  min-width: 120px;
+  background: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  color: var(--color-text);
+  padding: 20px 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: var(--font-body);
+}
+
+.cc-option:hover {
+  border-color: var(--color-primary);
+  background: rgba(68, 136, 255, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(68, 136, 255, 0.15);
+}
+
+.cc-option.selected {
+  border-color: var(--color-primary);
+  background: rgba(68, 136, 255, 0.2);
+  box-shadow: 0 0 20px rgba(68, 136, 255, 0.25), inset 0 0 20px rgba(68, 136, 255, 0.1);
+}
+
+.cc-option-icon {
+  font-size: 1.8rem;
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 8px rgba(68, 136, 255, 0.6));
+}
+
+.cc-option-label {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-heading);
+}
+
+.cc-option-desc {
+  font-size: 0.65rem;
+  color: rgba(200, 214, 229, 0.4);
+  letter-spacing: 1px;
+}
+
+/* ── Name Input ───────────────────────────────────────── */
+.cc-name-input-wrap {
+  margin-bottom: 30px;
+}
+
+.cc-name-input {
+  width: 100%;
+  background: rgba(10, 15, 40, 0.6);
+  border: 1px solid var(--color-glass-border);
+  color: var(--color-heading);
+  padding: 16px 20px;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  letter-spacing: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cc-name-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 20px rgba(68, 136, 255, 0.2), inset 0 0 10px rgba(68, 136, 255, 0.05);
+}
+
+.cc-name-input::placeholder {
+  color: rgba(200, 214, 229, 0.2);
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* ── Launch Button ────────────────────────────────────── */
+.cc-launch-btn {
+  width: 100%;
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: 18px 30px;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cc-launch-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.cc-launch-btn:not(:disabled):hover {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  box-shadow: 0 0 40px rgba(68, 136, 255, 0.4), 0 0 80px rgba(68, 136, 255, 0.2);
+  letter-spacing: 8px;
+}
+
+.cc-launch-arrow {
+  transition: transform 0.3s ease;
+}
+
+.cc-launch-btn:not(:disabled):hover .cc-launch-arrow {
+  transform: translateX(5px);
+}
+
+/* ── Navigation Buttons ───────────────────────────────── */
+.cc-nav {
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cc-nav-btn {
+  background: none;
+  border: 1px solid rgba(68, 136, 255, 0.2);
+  color: rgba(200, 214, 229, 0.5);
+  padding: 8px 16px;
+  font-family: var(--font-heading);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cc-nav-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.cc-next-btn {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(68, 136, 255, 0.08);
+  padding: 10px 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cc-next-btn:hover {
+  background: rgba(68, 136, 255, 0.2);
+  box-shadow: 0 0 15px rgba(68, 136, 255, 0.3);
+  color: var(--color-heading);
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cc-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  #character-preview-canvas {
+    width: 200px !important;
+    height: 260px !important;
+  }
+
+  .cc-title {
+    font-size: 1rem;
+    letter-spacing: 4px;
+  }
+
+  .cc-options {
+    flex-direction: column;
+  }
+
+  .cc-option {
+    min-width: auto;
+    flex-direction: row;
+    padding: 12px 15px;
+    gap: 12px;
+  }
+
+  .cc-option-icon {
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    filter: drop-shadow(0 0 6px rgba(68, 136, 255, 0.5));
+  }
+}

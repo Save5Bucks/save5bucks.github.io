@@ -4,11 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flinn Built — Deep Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="/src/styles/main.css" />
+  <link rel="stylesheet" href="/src/styles/characterCreator.css" />
+  <link rel="stylesheet" href="/src/styles/narrator.css" />
+  <link rel="stylesheet" href="/src/styles/shroud.css" />
+  <link rel="stylesheet" href="/src/styles/shipPanel.css" />
+  <link rel="stylesheet" href="/src/styles/introCrawl.css" />
 </head>
 <body>
+  <!-- Space Shroud — hides 3D canvas until dramatic reveal -->
+  <div id="space-shroud">
+    <div class="shroud-panel shroud-top"></div>
+    <div class="shroud-panel shroud-bottom"></div>
+    <div class="shroud-panel shroud-left"></div>
+    <div class="shroud-panel shroud-right"></div>
+    <div class="shroud-center">
+      <div class="shroud-iris"></div>
+    </div>
+    <div class="shroud-vignette"></div>
+  </div>
+
   <!-- Three.js Canvas -->
   <canvas id="space-canvas"></canvas>
+
+  <!-- Loading Screen (independent of HUD) -->
+  <div id="loading-screen">
+    <div class="loader">
+      <div class="loader-ring"></div>
+      <p class="loader-text">Entering Deep Space...</p>
+    </div>
+  </div>
 
   <!-- HUD Overlay -->
   <div id="hud">
@@ -27,14 +56,6 @@
       <div id="content-inner"></div>
     </div>
 
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-      <div class="loader">
-        <div class="loader-ring"></div>
-        <p class="loader-text">Entering Deep Space...</p>
-      </div>
-    </div>
-
     <!-- Crosshair -->
     <div id="crosshair">+</div>
 
@@ -42,6 +63,48 @@
     <div id="location-indicator">
       <span class="location-label">SECTOR:</span>
       <span id="location-name">HOME</span>
+    </div>
+
+    <!-- Ship Button (enter your starship) -->
+    <button id="ship-btn" title="Board your starship">
+      <span class="ship-btn-icon"><i class="bi bi-hexagon-fill"></i></span>
+      <span class="ship-btn-label">SHIP</span>
+    </button>
+
+    <!-- Ship Stats Panel -->
+    <div id="ship-panel">
+      <div class="ship-panel-inner">
+        <button id="ship-panel-close"><i class="bi bi-x-lg"></i></button>
+        <div class="ship-panel-header">
+          <div class="ship-panel-icon"><i class="bi bi-hexagon-fill"></i></div>
+          <h2 class="ship-panel-title">STARSHIP CONSOLE</h2>
+          <div class="ship-panel-subtitle">SYSTEMS ONLINE</div>
+        </div>
+        <div class="ship-panel-divider"></div>
+        <div class="ship-panel-section">
+          <h3>PILOT PROFILE</h3>
+          <div class="stat-row"><span class="stat-label">NAME</span><span id="stat-name" class="stat-value">—</span></div>
+          <div class="stat-row"><span class="stat-label">RACE</span><span id="stat-race" class="stat-value">—</span></div>
+          <div class="stat-row"><span class="stat-label">CLASS</span><span id="stat-class" class="stat-value">—</span></div>
+          <div class="stat-row"><span class="stat-label">GENDER</span><span id="stat-gender" class="stat-value">—</span></div>
+        </div>
+        <div class="ship-panel-divider"></div>
+        <div class="ship-panel-section">
+          <h3>EXPLORATION LOG</h3>
+          <div class="stat-row"><span class="stat-label">SECTORS EXPLORED</span><span id="stat-sectors" class="stat-value">0 / 6</span></div>
+          <div class="stat-row"><span class="stat-label">TOTAL JUMPS</span><span id="stat-visits" class="stat-value">0</span></div>
+          <div class="stat-row"><span class="stat-label">FIRST VOYAGE</span><span id="stat-created" class="stat-value">—</span></div>
+          <div class="stat-row"><span class="stat-label">LAST SEEN</span><span id="stat-lastseen" class="stat-value">—</span></div>
+        </div>
+        <div class="ship-panel-divider"></div>
+        <div class="ship-panel-section">
+          <h3>DISCOVERED SECTORS</h3>
+          <div id="stat-sector-list" class="sector-list"></div>
+        </div>
+        <div class="ship-panel-footer">
+          <button id="ship-panel-reset" class="ship-reset-btn"><i class="bi bi-exclamation-triangle-fill"></i> RESET PILOT DATA</button>
+        </div>
+      </div>
     </div>
   </div>
 

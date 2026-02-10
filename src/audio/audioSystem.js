@@ -49,35 +49,53 @@ export class AudioSystem {
    */
   playNavigate() {
     // Rising tone left to right
-    this._playTone({ freq: 200, type: 'sine', duration: 0.6, volume: 0.1, pan: -0.8, delay: 0 });
-    this._playTone({ freq: 300, type: 'sine', duration: 0.5, volume: 0.08, pan: 0, delay: 0.1 });
-    this._playTone({ freq: 500, type: 'sine', duration: 0.4, volume: 0.06, pan: 0.8, delay: 0.2 });
+    this._playTone({ freq: 200, type: 'sine', duration: 0.6, volume: 0.05, pan: -0.8, delay: 0 });
+    this._playTone({ freq: 300, type: 'sine', duration: 0.5, volume: 0.04, pan: 0, delay: 0.1 });
+    this._playTone({ freq: 500, type: 'sine', duration: 0.4, volume: 0.03, pan: 0.8, delay: 0.2 });
 
     // Low hum
-    this._playTone({ freq: 80, type: 'triangle', duration: 0.8, volume: 0.12, pan: 0, delay: 0 });
+    this._playTone({ freq: 80, type: 'triangle', duration: 0.8, volume: 0.06, pan: 0, delay: 0 });
   }
 
   /**
    * Arrival sound — crystalline chime
    */
   playArrive() {
-    this._playTone({ freq: 800, type: 'sine', duration: 0.3, volume: 0.08, pan: -0.3, delay: 0 });
-    this._playTone({ freq: 1200, type: 'sine', duration: 0.25, volume: 0.06, pan: 0.3, delay: 0.05 });
-    this._playTone({ freq: 1600, type: 'sine', duration: 0.4, volume: 0.04, pan: 0, delay: 0.1 });
+    this._playTone({ freq: 800, type: 'sine', duration: 0.3, volume: 0.04, pan: -0.3, delay: 0 });
+    this._playTone({ freq: 1200, type: 'sine', duration: 0.25, volume: 0.03, pan: 0.3, delay: 0.05 });
+    this._playTone({ freq: 1600, type: 'sine', duration: 0.4, volume: 0.02, pan: 0, delay: 0.1 });
   }
 
   /**
    * Hover sound — subtle blip
    */
   playHover() {
-    this._playTone({ freq: 600, type: 'sine', duration: 0.1, volume: 0.05, pan: 0 });
+    this._playTone({ freq: 600, type: 'sine', duration: 0.1, volume: 0.025, pan: 0 });
   }
 
   /**
    * Click sound — crisp tap
    */
   playClick() {
-    this._playTone({ freq: 1000, type: 'square', duration: 0.05, volume: 0.08, pan: 0 });
-    this._playTone({ freq: 1500, type: 'sine', duration: 0.1, volume: 0.04, pan: 0, delay: 0.03 });
+    this._playTone({ freq: 1000, type: 'square', duration: 0.05, volume: 0.04, pan: 0 });
+    this._playTone({ freq: 1500, type: 'sine', duration: 0.1, volume: 0.02, pan: 0, delay: 0.03 });
+  }
+
+  /**
+   * Space reveal — dramatic blast-door opening
+   */
+  playReveal() {
+    // Deep rumble left
+    this._playTone({ freq: 40, type: 'sawtooth', duration: 2.0, volume: 0.05, pan: -0.6, delay: 0 });
+    // Deep rumble right
+    this._playTone({ freq: 45, type: 'sawtooth', duration: 2.0, volume: 0.05, pan: 0.6, delay: 0.1 });
+    // Rising sweep
+    this._playTone({ freq: 100, type: 'sine', duration: 1.5, volume: 0.04, pan: -0.3, delay: 0.3 });
+    this._playTone({ freq: 200, type: 'sine', duration: 1.2, volume: 0.03, pan: 0, delay: 0.5 });
+    this._playTone({ freq: 400, type: 'sine', duration: 1.0, volume: 0.025, pan: 0.3, delay: 0.7 });
+    // Crystalline shimmer at the peak
+    this._playTone({ freq: 1200, type: 'sine', duration: 0.8, volume: 0.02, pan: -0.5, delay: 1.0 });
+    this._playTone({ freq: 1600, type: 'sine', duration: 0.6, volume: 0.015, pan: 0.5, delay: 1.1 });
+    this._playTone({ freq: 2000, type: 'sine', duration: 0.5, volume: 0.01, pan: 0, delay: 1.2 });
   }
 }

@@ -1,0 +1,309 @@
+/* ── Ship Button ──────────────────────────────────────── */
+#ship-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  color: var(--color-primary);
+  padding: 12px 16px;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Only show when HUD is visible */
+.hud-visible #ship-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#ship-btn:hover {
+  background: rgba(68, 136, 255, 0.25);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 25px rgba(68, 136, 255, 0.3), inset 0 0 15px rgba(68, 136, 255, 0.1);
+  transform: translateY(-3px);
+}
+
+.ship-btn-icon {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px var(--color-primary));
+}
+
+.ship-btn-label {
+  font-size: 9px;
+  opacity: 0.7;
+}
+
+/* ── Ship Panel (Stats Overlay) ──────────────────────── */
+#ship-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 16, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+#ship-panel.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ship-panel-inner {
+  position: relative;
+  width: 420px;
+  max-width: 90vw;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: linear-gradient(
+    135deg,
+    rgba(10, 15, 40, 0.92) 0%,
+    rgba(5, 10, 30, 0.95) 100%
+  );
+  border: 1px solid rgba(68, 136, 255, 0.3);
+  border-radius: 2px;
+  padding: 30px;
+  box-shadow:
+    0 0 40px rgba(68, 136, 255, 0.15),
+    inset 0 0 30px rgba(68, 136, 255, 0.05);
+
+  /* Scan line overlay */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(68, 136, 255, 0.02) 2px,
+      rgba(68, 136, 255, 0.02) 4px
+    );
+  clip-path: polygon(
+    0 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% 100%,
+    16px 100%,
+    0 calc(100% - 16px)
+  );
+  animation: panelFlicker 4s infinite;
+}
+
+@keyframes panelFlicker {
+  0%, 95%, 100% { opacity: 1; }
+  96% { opacity: 0.97; }
+  97% { opacity: 1; }
+  98% { opacity: 0.95; }
+}
+
+/* Scrollbar */
+.ship-panel-inner::-webkit-scrollbar {
+  width: 3px;
+}
+.ship-panel-inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ship-panel-inner::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* Close button */
+#ship-panel-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: 1px solid rgba(255, 68, 136, 0.3);
+  color: var(--color-accent);
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
+}
+
+#ship-panel-close:hover {
+  background: rgba(255, 68, 136, 0.15);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 12px rgba(255, 68, 136, 0.3);
+}
+
+/* Header */
+.ship-panel-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.ship-panel-icon {
+  font-size: 36px;
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 10px var(--color-primary));
+  margin-bottom: 8px;
+}
+
+.ship-panel-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  color: var(--color-heading);
+  text-transform: uppercase;
+}
+
+.ship-panel-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  color: var(--color-secondary);
+  margin-top: 4px;
+  opacity: 0.8;
+}
+
+/* Divider */
+.ship-panel-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  margin: 18px 0;
+  opacity: 0.4;
+}
+
+/* Section headers */
+.ship-panel-section h3 {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--color-primary);
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+/* Stat rows */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(68, 136, 255, 0.08);
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  color: var(--color-text);
+  opacity: 0.6;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-secondary);
+  text-align: right;
+}
+
+/* Sector discovery list */
+.sector-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.sector-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid rgba(68, 255, 170, 0.25);
+  color: var(--color-secondary);
+  background: rgba(68, 255, 170, 0.06);
+  clip-path: polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+}
+
+.sector-tag.undiscovered {
+  border-color: rgba(100, 100, 120, 0.2);
+  color: rgba(100, 100, 120, 0.4);
+  background: rgba(100, 100, 120, 0.05);
+}
+
+/* Footer */
+.ship-panel-footer {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.ship-reset-btn {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  padding: 8px 16px;
+  background: rgba(255, 68, 136, 0.08);
+  border: 1px solid rgba(255, 68, 136, 0.25);
+  color: var(--color-accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ship-reset-btn i {
+  font-size: 0.75rem;
+  filter: drop-shadow(0 0 4px rgba(255, 68, 136, 0.4));
+}
+
+.ship-reset-btn:hover {
+  background: rgba(255, 68, 136, 0.2);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 15px rgba(255, 68, 136, 0.3);
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  #ship-btn {
+    bottom: 15px;
+    right: 15px;
+    padding: 10px 12px;
+  }
+
+  .ship-panel-inner {
+    padding: 20px;
+  }
+
+  .ship-panel-title {
+    font-size: 1rem;
+    letter-spacing: 4px;
+  }
+}
