@@ -10,7 +10,7 @@
  * - Contextual triggers per section
  */
 
-import { getDialogue, getStarlinkQuip } from './dialogueScripts.js';
+import { getDialogue, getStarlinkQuip, getCombatLine, getShipCardLine, getGeneralLine } from './dialogueScripts.js';
 
 export class Narrator {
   constructor(audioSystem) {
@@ -27,6 +27,7 @@ export class Narrator {
     this.hasSpoken = {};          // track which sections have been narrated
     this.onComplete = null;
     this.isTyping = false;
+    this.isMuted = false;
 
     this._buildUI();
     this._bindEvents();
@@ -47,7 +48,12 @@ export class Narrator {
         </div>
         <div class="narrator-footer">
           <span class="narrator-hint">Click to continue</span>
-          <button id="narrator-skip" class="narrator-skip-btn">SKIP <i class="bi bi-skip-forward-fill"></i></button>
+          <div class="narrator-footer-actions">
+            <button id="narrator-mute" class="narrator-mute-btn" title="Mute narrator sounds">
+              <i class="bi bi-volume-up-fill"></i>
+            </button>
+            <button id="narrator-skip" class="narrator-skip-btn">SKIP <i class="bi bi-skip-forward-fill"></i></button>
+          </div>
         </div>
       </div>
     `;
@@ -59,14 +65,25 @@ export class Narrator {
 
     // Click to advance or skip typing
     narratorEl.addEventListener('click', (e) => {
-      // Don't advance if clicking skip button
+      // Don't advance if clicking skip or mute button
       if (e.target.id === 'narrator-skip' || e.target.closest('#narrator-skip')) return;
+      if (e.target.id === 'narrator-mute' || e.target.closest('#narrator-mute')) return;
       this._handleAdvance();
     });
 
     // Skip button — dismiss entirely
     document.getElementById('narrator-skip').addEventListener('click', () => {
       this._dismiss();
+    });
+
+    // Mute button — toggle narrator sounds
+    const muteBtn = document.getElementById('narrator-mute');
+    muteBtn.addEventListener('click', () => {
+      this.isMuted = !this.isMuted;
+      muteBtn.innerHTML = this.isMuted
+        ? '<i class="bi bi-volume-mute-fill"></i>'
+        : '<i class="bi bi-volume-up-fill"></i>';
+      muteBtn.classList.toggle('muted', this.isMuted);
     });
 
     // Keyboard
@@ -93,17 +110,14 @@ export class Narrator {
 
   /**
    * Speak a dialogue sequence by key (e.g. 'welcome', 'about', 'services')
+   * Each call gets a fresh random variant, so repeat visits sound different.
    * @param {string} key — dialogue script key
    * @param {function} onComplete — callback when all lines are done
    */
   speak(key, onComplete = null) {
-    // Don't repeat narration for a section (unless it's welcome/returning)
-    if (key !== 'welcome' && key !== 'returning' && this.hasSpoken[key]) return;
-
     const lines = getDialogue(key, this.character);
     if (!lines.length) return;
 
-    this.hasSpoken[key] = true;
     this.currentLines = lines;
     this.currentLineIndex = 0;
     this.currentCharIndex = 0;
@@ -133,6 +147,29 @@ export class Narrator {
   }
 
   /**
+   * Speak a one-off line (raw string, not from dialogueScripts).
+   * Won't interrupt active narration. Uses key for dedup.
+   */
+  speakOnce(key, text) {
+    if (this.isActive) return;
+    if (this.hasSpoken[key]) return;
+    this.hasSpoken[key] = true;
+
+    this.currentLines = [text];
+    this.currentLineIndex = 0;
+    this.currentCharIndex = 0;
+    this.onComplete = null;
+    this.isActive = true;
+
+    const narratorEl = document.getElementById('narrator');
+    narratorEl.classList.add('visible');
+    document.getElementById('narrator-typed').textContent = '';
+
+    this._playVoidSound();
+    this._typeLine();
+  }
+
+  /**
    * Speak a random Starlink satellite quip.
    * Won't fire if narrator is already talking.
    */
@@ -143,6 +180,74 @@ export class Narrator {
     if (!lines.length) return;
 
     this.currentLines = lines;
+    this.currentLineIndex = 0;
+    this.currentCharIndex = 0;
+    this.onComplete = null;
+    this.isActive = true;
+
+    const narratorEl = document.getElementById('narrator');
+    narratorEl.classList.add('visible');
+    document.getElementById('narrator-typed').textContent = '';
+
+    this._playVoidSound();
+    this._typeLine();
+  }
+
+  /**
+   * Speak a combat-state line by event type.
+   * @param {'spawn'|'engage'|'retreat'|'kill'|'hit'|'ambient'} event
+   */
+  speakCombatLine(event) {
+    if (this.isActive || !this.character) return;
+    const line = getCombatLine(event, this.character);
+    if (!line) return;
+
+    this.currentLines = [line];
+    this.currentLineIndex = 0;
+    this.currentCharIndex = 0;
+    this.onComplete = null;
+    this.isActive = true;
+
+    const narratorEl = document.getElementById('narrator');
+    narratorEl.classList.add('visible');
+    document.getElementById('narrator-typed').textContent = '';
+
+    this._playVoidSound();
+    this._typeLine();
+  }
+
+  /**
+   * Speak a ship-card-state line by sub-topic.
+   * @param {'general'|'xp'|'combat'|'quests'|'statPoints'|'exploration'} topic
+   */
+  speakShipCardLine(topic) {
+    if (this.isActive || !this.character) return;
+    const line = getShipCardLine(topic, this.character);
+    if (!line) return;
+
+    this.currentLines = [line];
+    this.currentLineIndex = 0;
+    this.currentCharIndex = 0;
+    this.onComplete = null;
+    this.isActive = true;
+
+    const narratorEl = document.getElementById('narrator');
+    narratorEl.classList.add('visible');
+    document.getElementById('narrator-typed').textContent = '';
+
+    this._playVoidSound();
+    this._typeLine();
+  }
+
+  /**
+   * Speak a random general/ambient cosmic musing.
+   */
+  speakGeneralLine() {
+    if (this.isActive || !this.character) return;
+    const line = getGeneralLine(this.character);
+    if (!line) return;
+
+    this.currentLines = [line];
     this.currentLineIndex = 0;
     this.currentCharIndex = 0;
     this.onComplete = null;
@@ -250,7 +355,7 @@ export class Narrator {
   // ── Audio ──────────────────────────────────────────────
 
   _playVoidSound() {
-    if (!this.audio || !this.audio.ctx) return;
+    if (this.isMuted || !this.audio || !this.audio.ctx) return;
     const ctx = this.audio.ctx;
     const now = ctx.currentTime;
 
@@ -261,7 +366,7 @@ export class Narrator {
     osc.frequency.setValueAtTime(55, now);
     osc.frequency.exponentialRampToValueAtTime(40, now + 1.5);
     gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.12, now + 0.3);
+    gain.gain.linearRampToValueAtTime(0.03, now + 0.3);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
     osc.connect(gain).connect(ctx.destination);
     osc.start(now);
@@ -274,7 +379,7 @@ export class Narrator {
     osc2.frequency.setValueAtTime(880, now);
     osc2.frequency.exponentialRampToValueAtTime(440, now + 1.0);
     gain2.gain.setValueAtTime(0, now);
-    gain2.gain.linearRampToValueAtTime(0.03, now + 0.1);
+    gain2.gain.linearRampToValueAtTime(0.0075, now + 0.1);
     gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.0);
 
     // Stereo pan sweep
@@ -288,7 +393,7 @@ export class Narrator {
   }
 
   _playTypeTick() {
-    if (!this.audio || !this.audio.ctx) return;
+    if (this.isMuted || !this.audio || !this.audio.ctx) return;
     const ctx = this.audio.ctx;
     const now = ctx.currentTime;
 
@@ -296,8 +401,8 @@ export class Narrator {
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(1200 + Math.random() * 400, now);
-    gain.gain.setValueAtTime(0.005, now);
-    gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.05);
+    gain.gain.setValueAtTime(0.00125, now);
+    gain.gain.exponentialRampToValueAtTime(0.000125, now + 0.05);
     osc.connect(gain).connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.05);

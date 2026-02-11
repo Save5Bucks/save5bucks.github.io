@@ -58,7 +58,74 @@ export function createDefaultCharacter() {
     createdAt: Date.now(),
     visits: 1,
     sectorsExplored: ['home'],
+    // ── RPG Stats ──
+    xp: 0,
+    level: 1,
+    statPoints: 0,        // earned on level-up, spent on upgrades
+    combatKills: 0,
+    questsCompleted: 0,
+    gunDamage: 1,         // base damage per shot
+    gunSpeed: 1,          // fire-rate tier (1 = slow, higher = faster)
   };
+}
+
+/**
+ * XP required for the next level (exponential curve)
+ */
+export function xpForLevel(level) {
+  return Math.floor(80 * Math.pow(1.4, level - 1));
+}
+
+/**
+ * Award XP to the character. Auto-levels up and grants stat points.
+ * Returns { leveled: bool, newLevel: number, xpGained: number }
+ */
+export function awardXP(amount) {
+  const char = loadCharacter();
+  if (!char) return { leveled: false };
+
+  // Ensure fields exist for legacy saves
+  char.xp = (char.xp || 0) + amount;
+  char.level = char.level || 1;
+  char.statPoints = char.statPoints || 0;
+
+  let leveled = false;
+  let needed = xpForLevel(char.level);
+  while (char.xp >= needed) {
+    char.xp -= needed;
+    char.level++;
+    char.statPoints += 2;
+    leveled = true;
+    needed = xpForLevel(char.level);
+  }
+
+  saveCharacter(char);
+  return { leveled, newLevel: char.level, xpGained: amount };
+}
+
+/**
+ * Spend one stat point on a given stat ('gunDamage' or 'gunSpeed').
+ * Returns true if successful.
+ */
+export function spendStatPoint(stat) {
+  const char = loadCharacter();
+  if (!char || (char.statPoints || 0) < 1) return false;
+  if (stat !== 'gunDamage' && stat !== 'gunSpeed') return false;
+
+  char[stat] = (char[stat] || 1) + 1;
+  char.statPoints--;
+  saveCharacter(char);
+  return true;
+}
+
+/**
+ * Increment a numeric field on the character (e.g. 'combatKills', 'questsCompleted')
+ */
+export function incrementStat(field) {
+  const char = loadCharacter();
+  if (!char) return;
+  char[field] = (char[field] || 0) + 1;
+  saveCharacter(char);
 }
 
 /**

@@ -205,8 +205,9 @@ function launchComet(comet, cameraPos) {
 
   comet.group.position.copy(comet.startPos);
 
-  // Face the direction of travel
-  const lookTarget = comet.startPos.clone().add(comet.velocity);
+  // Orient so the tail (+Z child) trails behind the direction of travel
+  // lookAt points -Z toward target, so we look OPPOSITE to velocity
+  const lookTarget = comet.startPos.clone().sub(comet.velocity);
   comet.group.lookAt(lookTarget);
 
   comet.lifetime = 0;

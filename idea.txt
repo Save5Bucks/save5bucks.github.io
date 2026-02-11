@@ -96,3 +96,24 @@ in the software section we need this text for my apps not in the is format just 
     We do not collect, store, or upload any personal data. The only data transmitted is 
     automated crash reports and purchase information processed by Google or Apple service. Your data is not captured, recorded, or sold by Flinn Built.
 </p>
+
+Character Quest system
+
+    - Have points on the planet in random locations that will have a task to complete a quest.
+    - This could be random trivia or a math problem or a work puzzle. A variety of fun activities that can be expanded on.
+    - Should use our container and display this quest, user can accept or deny. They will gain xp on completion.
+    - Quests should be pins off of the planets.
+
+Space Ship Fighting
+
+    - Random attacks from anywhere in the site from red ships
+    - Use mouse to aim and shoot, small particle effects on ship death. The user can not die but the other ships can. Only one encounter at a time and then random events not happening more than once every 60 seconds.
+    - Should gain ex on kill and level up for faster guns and more damage. This should be in the ship menu with a stat counter next to damage and speed for the gun upgrades with + and - values
+    - Hostile should also have a red vignette on the screen with the options to stop or run. if stopped it should disable the hostiles.
+    - Should change camera view to a open area for the dog fight. this way the planets are not an issue. the player ship should also take hits but no damage.
+
+UI 
+    - Need more of a space hud for the main ui. This should show player XP and ship stats.
+    - Should feel like a futuristic spaceship control panel with holographic displays and dynamic indicators.
+    - We should not change the site from what we have just add to it.
+    

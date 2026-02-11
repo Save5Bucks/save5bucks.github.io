@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="/src/styles/shroud.css" />
   <link rel="stylesheet" href="/src/styles/shipPanel.css" />
   <link rel="stylesheet" href="/src/styles/introCrawl.css" />
+  <link rel="stylesheet" href="/src/styles/quest.css" />
+  <link rel="stylesheet" href="/src/styles/combat.css" />
+  <link rel="stylesheet" href="/src/styles/hudStats.css" />
 </head>
 <body>
   <!-- Space Shroud — hides 3D canvas until dramatic reveal -->
@@ -65,10 +68,29 @@
       <span id="location-name">HOME</span>
     </div>
 
+    <!-- Pilot HUD — XP Bar + Level -->
+    <div id="pilot-hud">
+      <div class="pilot-hud-level" id="hud-level">1</div>
+      <div class="pilot-hud-bar-wrap">
+        <div class="pilot-hud-label">
+          <span id="hud-xp-text">0 / 80 XP</span>
+        </div>
+        <div class="pilot-hud-track">
+          <div class="pilot-hud-fill" id="hud-xp-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="pilot-hud-stats">
+        <span class="pilot-hud-stat"><i class="bi bi-crosshair"></i> <span id="hud-kills">0</span></span>
+        <span class="pilot-hud-stat"><i class="bi bi-broadcast-pin"></i> <span id="hud-quests">0</span></span>
+      </div>
+    </div>
+    <div id="xp-toast-container"></div>
+
     <!-- Ship Button (enter your starship) -->
     <button id="ship-btn" title="Board your starship">
       <span class="ship-btn-icon"><i class="bi bi-hexagon-fill"></i></span>
       <span class="ship-btn-label">SHIP</span>
+      <span class="ship-btn-badge" id="stat-point-badge"></span>
     </button>
 
     <!-- Ship Stats Panel -->
@@ -81,25 +103,76 @@
           <div class="ship-panel-subtitle">SYSTEMS ONLINE</div>
         </div>
         <div class="ship-panel-divider"></div>
-        <div class="ship-panel-section">
-          <h3>PILOT PROFILE</h3>
-          <div class="stat-row"><span class="stat-label">NAME</span><span id="stat-name" class="stat-value">—</span></div>
-          <div class="stat-row"><span class="stat-label">RACE</span><span id="stat-race" class="stat-value">—</span></div>
-          <div class="stat-row"><span class="stat-label">CLASS</span><span id="stat-class" class="stat-value">—</span></div>
-          <div class="stat-row"><span class="stat-label">GENDER</span><span id="stat-gender" class="stat-value">—</span></div>
-        </div>
-        <div class="ship-panel-divider"></div>
-        <div class="ship-panel-section">
-          <h3>EXPLORATION LOG</h3>
-          <div class="stat-row"><span class="stat-label">SECTORS EXPLORED</span><span id="stat-sectors" class="stat-value">0 / 6</span></div>
-          <div class="stat-row"><span class="stat-label">TOTAL JUMPS</span><span id="stat-visits" class="stat-value">0</span></div>
-          <div class="stat-row"><span class="stat-label">FIRST VOYAGE</span><span id="stat-created" class="stat-value">—</span></div>
-          <div class="stat-row"><span class="stat-label">LAST SEEN</span><span id="stat-lastseen" class="stat-value">—</span></div>
-        </div>
-        <div class="ship-panel-divider"></div>
-        <div class="ship-panel-section">
-          <h3>DISCOVERED SECTORS</h3>
-          <div id="stat-sector-list" class="sector-list"></div>
+        <div class="ship-panel-columns">
+          <!-- Left Column: Character + Pilot Profile -->
+          <div class="ship-panel-col ship-panel-col-left">
+            <div class="ship-panel-section ship-char-preview-wrap">
+              <h3>HOLOGRAM</h3>
+              <canvas id="ship-char-canvas" width="260" height="320"></canvas>
+              <div class="ship-char-label">PILOT HOLOGRAM</div>
+            </div>
+            <div class="ship-panel-divider"></div>
+            <div class="ship-panel-section">
+              <h3>PILOT PROFILE</h3>
+              <div class="stat-row"><span class="stat-label">NAME</span><span id="stat-name" class="stat-value">—</span></div>
+              <div class="stat-row"><span class="stat-label">RACE</span><span id="stat-race" class="stat-value">—</span></div>
+              <div class="stat-row"><span class="stat-label">CLASS</span><span id="stat-class" class="stat-value">—</span></div>
+              <div class="stat-row"><span class="stat-label">GENDER</span><span id="stat-gender" class="stat-value">—</span></div>
+            </div>
+            <div class="ship-panel-divider"></div>
+            <div class="ship-panel-section">
+              <h3>DISCOVERED SECTORS</h3>
+              <div id="stat-sector-list" class="sector-list"></div>
+            </div>
+          </div>
+          <!-- Right Column: Exploration, Combat, Weapons -->
+          <div class="ship-panel-col ship-panel-col-right">
+            <div class="ship-panel-section">
+              <h3>EXPLORATION LOG</h3>
+              <div class="stat-row"><span class="stat-label">SECTORS EXPLORED</span><span id="stat-sectors" class="stat-value">0 / 6</span></div>
+              <div class="stat-row"><span class="stat-label">TOTAL JUMPS</span><span id="stat-visits" class="stat-value">0</span></div>
+              <div class="stat-row"><span class="stat-label">FIRST VOYAGE</span><span id="stat-created" class="stat-value">—</span></div>
+              <div class="stat-row"><span class="stat-label">LAST SEEN</span><span id="stat-lastseen" class="stat-value">—</span></div>
+            </div>
+            <div class="ship-panel-divider"></div>
+            <div class="ship-panel-section">
+              <h3>COMBAT &amp; PROGRESSION</h3>
+              <div class="stat-row"><span class="stat-label">LEVEL</span><span id="stat-level" class="stat-value">1</span></div>
+              <div class="stat-row"><span class="stat-label">XP</span><span id="stat-xp" class="stat-value">0 / 80</span></div>
+              <div class="stat-row"><span class="stat-label">STAT POINTS</span><span id="stat-points" class="stat-value">0</span></div>
+              <div class="stat-row"><span class="stat-label">KILLS</span><span id="stat-kills" class="stat-value">0</span></div>
+              <div class="stat-row"><span class="stat-label">QUESTS</span><span id="stat-quests" class="stat-value">0</span></div>
+            </div>
+            <div class="ship-panel-divider"></div>
+            <div class="ship-panel-section">
+              <h3>WEAPON SYSTEMS</h3>
+              <div class="stat-row upgrade-row">
+                <span class="stat-label">DAMAGE</span>
+                <span class="stat-upgrade">
+                  <button class="upgrade-btn" data-stat="gunDamage" data-dir="-1">−</button>
+                  <span id="stat-gun-damage" class="stat-value">1</span>
+                  <button class="upgrade-btn" data-stat="gunDamage" data-dir="1">+</button>
+                </span>
+              </div>
+              <div class="stat-row upgrade-row">
+                <span class="stat-label">FIRE RATE</span>
+                <span class="stat-upgrade">
+                  <button class="upgrade-btn" data-stat="gunSpeed" data-dir="-1">−</button>
+                  <span id="stat-gun-speed" class="stat-value">1</span>
+                  <button class="upgrade-btn" data-stat="gunSpeed" data-dir="1">+</button>
+                </span>
+              </div>
+              <div class="stat-row">
+                <span class="stat-label">COMBAT</span>
+                <span class="stat-upgrade">
+                  <label class="combat-toggle">
+                    <input type="checkbox" id="combat-toggle-input">
+                    <span class="combat-toggle-slider"></span>
+                  </label>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="ship-panel-footer">
           <button id="ship-panel-reset" class="ship-reset-btn"><i class="bi bi-exclamation-triangle-fill"></i> RESET PILOT DATA</button>

@@ -27,3 +27,6 @@ npm-debug.log*
 
 # Misc
 .cache/
+
+# Model textures (not used — custom shaders applied at runtime)
+public/models/**/textures/

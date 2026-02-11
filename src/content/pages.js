@@ -182,9 +182,9 @@ export const pageContent = {
           </div>
         </div>
         <form class="contact-form" onsubmit="event.preventDefault();">
-          <input type="text" placeholder="Your Name" class="form-input" />
-          <input type="email" placeholder="Your Email" class="form-input" />
-          <textarea placeholder="Your Message" class="form-input form-textarea" rows="4"></textarea>
+          <input type="text" name="name" placeholder="Your Name" class="form-input" required />
+          <input type="email" name="email" placeholder="Your Email" class="form-input" required />
+          <textarea name="message" placeholder="Your Message" class="form-input form-textarea" rows="4" required></textarea>
           <button type="submit" class="form-submit">TRANSMIT MESSAGE</button>
         </form>
       </div>

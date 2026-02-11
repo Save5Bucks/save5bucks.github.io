@@ -49,21 +49,21 @@ export class AudioSystem {
    */
   playNavigate() {
     // Rising tone left to right
-    this._playTone({ freq: 200, type: 'sine', duration: 0.6, volume: 0.05, pan: -0.8, delay: 0 });
-    this._playTone({ freq: 300, type: 'sine', duration: 0.5, volume: 0.04, pan: 0, delay: 0.1 });
-    this._playTone({ freq: 500, type: 'sine', duration: 0.4, volume: 0.03, pan: 0.8, delay: 0.2 });
+    this._playTone({ freq: 200, type: 'sine', duration: 0.6, volume: 0.01, pan: -0.8, delay: 0 });
+    this._playTone({ freq: 300, type: 'sine', duration: 0.5, volume: 0.008, pan: 0, delay: 0.1 });
+    this._playTone({ freq: 500, type: 'sine', duration: 0.4, volume: 0.006, pan: 0.8, delay: 0.2 });
 
     // Low hum
-    this._playTone({ freq: 80, type: 'triangle', duration: 0.8, volume: 0.06, pan: 0, delay: 0 });
+    this._playTone({ freq: 80, type: 'triangle', duration: 0.8, volume: 0.012, pan: 0, delay: 0 });
   }
 
   /**
    * Arrival sound — crystalline chime
    */
   playArrive() {
-    this._playTone({ freq: 800, type: 'sine', duration: 0.3, volume: 0.04, pan: -0.3, delay: 0 });
-    this._playTone({ freq: 1200, type: 'sine', duration: 0.25, volume: 0.03, pan: 0.3, delay: 0.05 });
-    this._playTone({ freq: 1600, type: 'sine', duration: 0.4, volume: 0.02, pan: 0, delay: 0.1 });
+    this._playTone({ freq: 800, type: 'sine', duration: 0.3, volume: 0.008, pan: -0.3, delay: 0 });
+    this._playTone({ freq: 1200, type: 'sine', duration: 0.25, volume: 0.006, pan: 0.3, delay: 0.05 });
+    this._playTone({ freq: 1600, type: 'sine', duration: 0.4, volume: 0.004, pan: 0, delay: 0.1 });
   }
 
   /**
@@ -98,4 +98,43 @@ export class AudioSystem {
     this._playTone({ freq: 1600, type: 'sine', duration: 0.6, volume: 0.015, pan: 0.5, delay: 1.1 });
     this._playTone({ freq: 2000, type: 'sine', duration: 0.5, volume: 0.01, pan: 0, delay: 1.2 });
   }
+
+  // ── Combat Sounds ─────────────────────────────────────
+
+  /**
+   * Laser shot — snappy zap
+   */
+  playLaser() {
+    this._playTone({ freq: 1800, type: 'sawtooth', duration: 0.08, volume: 0.03, pan: rand(-0.3, 0.3) });
+    this._playTone({ freq: 900, type: 'square', duration: 0.06, volume: 0.02, pan: 0, delay: 0.02 });
+  }
+
+  /**
+   * Hit confirmation — thud + spark
+   */
+  playHit() {
+    this._playTone({ freq: 200, type: 'sine', duration: 0.15, volume: 0.04, pan: 0 });
+    this._playTone({ freq: 2500, type: 'sine', duration: 0.05, volume: 0.02, pan: rand(-0.5, 0.5), delay: 0.02 });
+  }
+
+  /**
+   * Explosion — rumble + crackle
+   */
+  playExplosion() {
+    this._playTone({ freq: 60, type: 'sawtooth', duration: 0.6, volume: 0.05, pan: 0 });
+    this._playTone({ freq: 120, type: 'triangle', duration: 0.5, volume: 0.04, pan: -0.4, delay: 0.05 });
+    this._playTone({ freq: 250, type: 'square', duration: 0.3, volume: 0.02, pan: 0.4, delay: 0.1 });
+    this._playTone({ freq: 80, type: 'sine', duration: 0.8, volume: 0.03, pan: 0, delay: 0 });
+  }
+
+  /**
+   * Alert — hostile detected warning
+   */
+  playAlert() {
+    this._playTone({ freq: 500, type: 'square', duration: 0.15, volume: 0.03, pan: -0.5 });
+    this._playTone({ freq: 500, type: 'square', duration: 0.15, volume: 0.03, pan: 0.5, delay: 0.2 });
+    this._playTone({ freq: 700, type: 'square', duration: 0.2, volume: 0.025, pan: 0, delay: 0.4 });
+  }
 }
+
+function rand(a, b) { return a + Math.random() * (b - a); }

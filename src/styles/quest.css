@@ -1,0 +1,250 @@
+/* ── Quest Modal Overlay ──────────────────────────────── */
+.quest-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 16, 0.7);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.quest-overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.quest-modal {
+  background: rgba(0, 8, 32, 0.95);
+  border: 1px solid var(--color-primary, #4488ff);
+  border-radius: 8px;
+  padding: 2rem 2.5rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow:
+    0 0 30px rgba(68, 136, 255, 0.15),
+    inset 0 0 30px rgba(68, 136, 255, 0.05);
+  animation: questSlideIn 0.4s ease;
+}
+
+@keyframes questSlideIn {
+  from { transform: translateY(20px) scale(0.96); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.quest-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.quest-icon {
+  font-size: 1.8rem;
+  color: var(--color-secondary, #44ffaa);
+  margin-bottom: 0.3rem;
+}
+
+.quest-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  color: var(--color-primary, #4488ff);
+  letter-spacing: 3px;
+  margin: 0;
+}
+
+.quest-type {
+  font-size: 0.7rem;
+  color: var(--color-accent, #ff4488);
+  letter-spacing: 2px;
+  margin-top: 0.3rem;
+}
+
+.quest-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary, #4488ff), transparent);
+  margin: 1rem 0;
+}
+
+.quest-question {
+  font-size: 1.05rem;
+  color: #c8d6e5;
+  line-height: 1.6;
+  text-align: center;
+  margin: 1rem 0 1.5rem;
+}
+
+/* ── Choice Buttons ──────────────────────────────────── */
+.quest-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.quest-choice-btn {
+  background: rgba(68, 136, 255, 0.08);
+  border: 1px solid rgba(68, 136, 255, 0.3);
+  color: #c8d6e5;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  padding: 0.7rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+
+.quest-choice-btn:hover:not(:disabled) {
+  background: rgba(68, 136, 255, 0.2);
+  border-color: var(--color-primary, #4488ff);
+  color: #fff;
+  transform: scale(1.03);
+}
+
+.quest-choice-btn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.quest-choice-btn.correct {
+  border-color: var(--color-secondary, #44ffaa);
+  background: rgba(68, 255, 170, 0.15);
+  color: var(--color-secondary, #44ffaa);
+  opacity: 1;
+}
+
+.quest-choice-btn.wrong {
+  border-color: var(--color-accent, #ff4488);
+  background: rgba(255, 68, 136, 0.15);
+  color: var(--color-accent, #ff4488);
+  opacity: 1;
+}
+
+/* ── Result Message ──────────────────────────────────── */
+.quest-result {
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  margin-top: 1rem;
+  min-height: 1.5rem;
+}
+
+.quest-result.success {
+  color: var(--color-secondary, #44ffaa);
+  text-shadow: 0 0 8px rgba(68, 255, 170, 0.4);
+}
+
+.quest-result.failure {
+  color: var(--color-accent, #ff4488);
+  text-shadow: 0 0 8px rgba(255, 68, 136, 0.4);
+}
+
+/* ── Action Buttons ──────────────────────────────────── */
+.quest-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.quest-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quest-decline {
+  background: transparent;
+  border: 1px solid rgba(255, 68, 136, 0.4);
+  color: var(--color-accent, #ff4488);
+}
+
+.quest-decline:hover {
+  background: rgba(255, 68, 136, 0.1);
+  border-color: var(--color-accent, #ff4488);
+}
+
+/* ── Enemy HP Bar ────────────────────────────────────── */
+.enemy-hp-bar {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1500;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.enemy-hp-bar.visible {
+  opacity: 1;
+}
+
+.enemy-hp-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.6rem;
+  color: var(--color-accent, #ff4488);
+  letter-spacing: 3px;
+  margin-bottom: 0.3rem;
+}
+
+.enemy-hp-track {
+  width: 200px;
+  height: 6px;
+  background: rgba(255, 68, 136, 0.15);
+  border: 1px solid rgba(255, 68, 136, 0.4);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.enemy-hp-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--color-accent, #ff4488), #ff6644);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px rgba(255, 68, 136, 0.5);
+}
+
+/* ── Upgrade Buttons in Ship Panel ───────────────────── */
+.upgrade-row .stat-upgrade {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upgrade-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid rgba(68, 136, 255, 0.4);
+  background: rgba(68, 136, 255, 0.08);
+  color: var(--color-primary, #4488ff);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.upgrade-btn:hover {
+  background: rgba(68, 136, 255, 0.25);
+  border-color: var(--color-primary, #4488ff);
+  transform: scale(1.1);
+}
+
+.upgrade-btn[data-dir="-1"] {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}

@@ -1,0 +1,172 @@
+/* ─── Combat System Styles ─── */
+
+/* Red screen vignette during combat */
+.combat-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  border: 3px solid rgba(255, 30, 40, 0.0);
+  box-shadow:
+    inset 0 0 60px rgba(255, 20, 30, 0.08),
+    inset 0 0 20px rgba(255, 20, 30, 0.05);
+}
+
+.combat-vignette.visible {
+  opacity: 1;
+  border-color: rgba(255, 30, 40, 0.25);
+  box-shadow:
+    inset 0 0 80px rgba(255, 20, 30, 0.12),
+    inset 0 0 30px rgba(255, 20, 30, 0.08);
+}
+
+/* Engage / Retreat prompt */
+.combat-prompt {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 16, 0.75) 0%,
+    rgba(0, 0, 16, 0.45) 60%,
+    transparent 100%
+  );
+}
+
+.combat-prompt.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.combat-prompt-inner {
+  text-align: center;
+  padding: 2rem 3rem;
+  border: 1px solid rgba(255, 68, 136, 0.35);
+  border-radius: 12px;
+  background: rgba(0, 0, 16, 0.85);
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 0 30px rgba(255, 68, 136, 0.15),
+    inset 0 0 20px rgba(255, 68, 136, 0.05);
+  animation: promptAppear 0.5s ease-out;
+}
+
+@keyframes promptAppear {
+  from {
+    transform: scale(0.85) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.combat-prompt-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent, #ff4488);
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 12px rgba(255, 68, 136, 0.5);
+}
+
+.combat-prompt-sub {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.08em;
+}
+
+.combat-prompt-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.combat-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.65rem 2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid;
+}
+
+.combat-engage {
+  color: #44ffaa;
+  background: rgba(68, 255, 170, 0.08);
+  border-color: rgba(68, 255, 170, 0.4);
+  box-shadow: 0 0 12px rgba(68, 255, 170, 0.1);
+}
+
+.combat-engage:hover {
+  background: rgba(68, 255, 170, 0.2);
+  border-color: rgba(68, 255, 170, 0.7);
+  box-shadow: 0 0 20px rgba(68, 255, 170, 0.25);
+  transform: scale(1.05);
+}
+
+.combat-retreat {
+  color: #ff6666;
+  background: rgba(255, 60, 60, 0.08);
+  border-color: rgba(255, 60, 60, 0.4);
+  box-shadow: 0 0 12px rgba(255, 60, 60, 0.1);
+}
+
+.combat-retreat:hover {
+  background: rgba(255, 60, 60, 0.2);
+  border-color: rgba(255, 60, 60, 0.7);
+  box-shadow: 0 0 20px rgba(255, 60, 60, 0.25);
+  transform: scale(1.05);
+}
+
+/* White hit flash overlay */
+.combat-hit-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 95;
+  opacity: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 200, 200, 0.15) 50%,
+    transparent 80%
+  );
+  transition: opacity 0.08s ease-in;
+}
+
+.combat-hit-flash.active {
+  opacity: 1;
+  transition: opacity 0.02s ease-in;
+}
+
+/* Enemy HP bar is styled in quest.css via .enemy-hp-bar class */
+
+/* ─── Hide UI during combat ────────────────────────────── */
+body.combat-active nav,
+body.combat-active #content-overlay,
+body.combat-active #location-indicator,
+body.combat-active #pilot-hud,
+body.combat-active #ship-btn,
+body.combat-active #xp-toast-container {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.5s ease;
+}
