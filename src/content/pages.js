@@ -171,10 +171,6 @@ export const pageContent = {
           <h3>Get In Touch</h3>
           <p>Ready to build something extraordinary? Let's talk.</p>
           <div class="contact-links">
-            <a href="mailto:hello@flinnbuilt.com" class="contact-link">
-              <span class="link-icon"><i class="bi bi-envelope"></i></span>
-              hello@flinnbuilt.com
-            </a>
             <a href="https://flinnbuilt.com" class="contact-link" target="_blank">
               <span class="link-icon"><i class="bi bi-globe2"></i></span>
               www.flinnbuilt.com
