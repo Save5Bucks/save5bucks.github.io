@@ -1,0 +1,10 @@
+# Python utility scripts — not part of the website
+localize_images.py
+download_gallery.py
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
